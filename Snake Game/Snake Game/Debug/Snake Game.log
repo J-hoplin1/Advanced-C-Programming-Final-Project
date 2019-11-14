@@ -1,0 +1,3 @@
+﻿  main.c
+c:\users\jhyoo\desktop\게임소프트웨어 기말프로젝트\snake game\snake game\main.c(138): warning C4101: 'j' :참조되지 않은 지역 변수입니다.
+  Snake Game.vcxproj -> C:\Users\jhyoo\Desktop\게임소프트웨어 기말프로젝트\Snake Game\Debug\Snake Game.exe
