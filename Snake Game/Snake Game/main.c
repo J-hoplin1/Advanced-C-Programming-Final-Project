@@ -3,6 +3,7 @@
 #include<conio.h>
 #include<stdlib.h>
 #include<time.h>
+#include<string.h>
 
 #define LEFT 75
 #define RIGHT 77
@@ -37,12 +38,73 @@ void move(int *key, int *dir, int *speed, int *length, int *score, int *x, int *
 void pause(int *key); //일시정지 
 void game_over(int *key, int *dir, int *speed, int *length, int *score, int *x, int *y, int *food_x, int *food_y, int *last_score, int *best_score, int *stage, int *nextlimit);
 //사용자의 점수
+void choosesnake(char *head,char *tail);
 
 void draw_door();
 
 void showscore(); 
 ////////////////////////////MAIN START//////////////////////////////
 
+
+void choosesnake(char *head,char *tail)
+{
+	int loop = 0;
+	int key = 0;
+	while (_kbhit()) _getch();
+	int i = 0;
+	int j = 0;
+	draw_map();  
+	for (i = MAP_Y + 1; i < MAP_Y + MAP_HEIGHT - 1; i++) { // 맵 테두리 안쪽을 빈칸으로 채움 
+		for (j = MAP_X + 1; j < MAP_X + MAP_WIDTH - 1; j++) gotoxy(j, i, "  ");
+	}
+	gotoxy(MAP_X + (MAP_WIDTH / 2) - 7, MAP_Y + 3, "+--------------------------+");
+	gotoxy(MAP_X + (MAP_WIDTH / 2) - 7, MAP_Y + 4, "|     Select Character     |");
+	gotoxy(MAP_X + (MAP_WIDTH / 2) - 7, MAP_Y + 5, "+--------------------------+");
+	gotoxy(MAP_X + (MAP_WIDTH / 2) - 7, MAP_Y + 7, "	  Default head : ㅎ		");
+	gotoxy(MAP_X + (MAP_WIDTH / 2) - 7, MAP_Y + 8, "	  Default tail : ㅇ		");
+
+	gotoxy(MAP_X + (MAP_WIDTH / 2) - 7, MAP_Y + 10, "	   Select Options		");
+	gotoxy(MAP_X + (MAP_WIDTH / 2) - 9, MAP_Y + 13, " Head : 1 . ◇ 2 . ▣ 3. ≪ 4 . ∑");
+	
+	key = _getch();
+	switch (key)
+	{
+	case 49:
+		strcpy(head,"◇");
+		break;
+	case 50:
+		strcpy(head, "▣");
+		break;
+	case 51:
+		strcpy(head, "≪");
+		break;
+	case 52:
+		strcpy(head, "∑");
+		break;
+	default:
+		break;
+	}
+	gotoxy(MAP_X + (MAP_WIDTH / 2) - 9, MAP_Y + 13, " Tail : 1 . □ 2 . た 3 . ♧ 4 . ♬");
+	key = _getch();
+	switch (key)
+	{
+	case 49:
+		strcpy(tail, "□");
+		break;
+	case 50:
+		strcpy(tail, "た");
+		break;
+	case 51:
+		strcpy(tail, "♧");
+		break;
+	case 52:
+		strcpy(tail, "♬");
+		break;
+	default:
+		break;
+	}
+
+}
 //메인함수
 int main() {
 	int x[100], y[100]; //x,y 좌표값을 저장 총 100개 
@@ -55,12 +117,19 @@ int main() {
 	int dir = 0; //이동방향 저장 
 	int key = 0; //입력받은 키 저장 
 	int status_on = 0; // 개발자용 status 표시활성화 변수.. 게임중에 S키를 누르면 활성
+	int last_stage = 0;//최근 플레이의 스테이지
 	//stage
 	int stage = 0;
 	//nex level limit score
 	int nextlimit = 0;
+	// default head as "ㅎ"
+	char head[3] = "ㅎ";
+	// default tail as "ㅇ"
+	char tail[3] = "ㅇ";
 	//타이틀 화면으로 전환
-	title(&key,&dir, &speed,&length, &score, x,y,&food_x,&food_y,&last_score,&best_score, &stage,&nextlimit);
+	title(&key,&dir, &speed,&length, &score, x,y,&food_x,&food_y,&last_score,&best_score, &stage,&nextlimit,head,tail,&last_stage);
+
+	
 
 	while (1) {
 		
@@ -92,11 +161,10 @@ int main() {
 		{
 			draw_door();
 			stage += 1;
-			nextlimit += 50;
-			score = 0;
-			speed -= 10;
+			nextlimit += 100;
+			speed -= 20;
 		}
-		move(&key,&dir,&speed,&length,&score,x,y,&food_x,&food_y,&last_score,&best_score,&stage,&nextlimit);
+		move(&key,&dir,&speed,&length,&score,x,y,&food_x,&food_y,&last_score,&best_score,&stage,&nextlimit,head,tail,&last_stage);
 		
 		if (status_on == 1) status(x,y,&food_x,&food_y,&length,&key,&speed,&score); // status표시 
 	}
@@ -126,7 +194,7 @@ void draw_door()
 }
 
 ///////////////////////////MAIN END////////////////////////////////
-void title(int *key,int *dir, int *speed, int *length,int *score, int *x, int *y, int *food_x, int *food_y, int *last_score, int *best_score, int *stage, int *nextlimit) {
+void title(int *key,int *dir, int *speed, int *length,int *score, int *x, int *y, int *food_x, int *food_y, int *last_score, int *best_score, int *stage, int *nextlimit,char *head, char *tail, int *laststage) {
 	int i, j;
 
 	while (_kbhit()) _getch(); //버퍼에 있는 키값을 버림 
@@ -146,7 +214,7 @@ void title(int *key,int *dir, int *speed, int *length,int *score, int *x, int *y
 	gotoxy(MAP_X + (MAP_WIDTH / 2) - 7, MAP_Y + 10, "   ◇ P : Pause             ");gotoxy(MAP_X + (MAP_WIDTH / 2) - 7, MAP_Y + 11, "   ◇ ESC : Quit              ");
 
 	gotoxy(MAP_X + (MAP_WIDTH / 2) - 7, MAP_Y + 15, "1 . 게임 시작하기.");
-	gotoxy(MAP_X + (MAP_WIDTH / 2) - 7, MAP_Y + 17, "2 . 플레이어 점수확인하기.");
+	gotoxy(MAP_X + (MAP_WIDTH / 2) - 7, MAP_Y + 17, "2 . 캐릭터 선택하기.");
 
 	while (1) {
 		if (_kbhit()) { //키입력받음 
@@ -158,7 +226,8 @@ void title(int *key,int *dir, int *speed, int *length,int *score, int *x, int *y
 			}
 			else if (*key == 50)
 			{
-				title(key, dir, speed, length, score, x, y, food_x, food_y,last_score,best_score, stage,nextlimit);
+				choosesnake(head,tail);
+				title(key, dir, speed, length, score, x, y, food_x, food_y, last_score, best_score, stage, nextlimit, head, tail,laststage);
 				return;
 			} 
 		}
@@ -168,20 +237,19 @@ void title(int *key,int *dir, int *speed, int *length,int *score, int *x, int *y
 		Sleep(400);
 
 	}
-	reset(dir,speed, length, score, x, y,food_x,food_y,last_score, best_score,stage, nextlimit); // 게임을 초기화  
+	reset(dir,speed, length, score, x, y,food_x,food_y,last_score, best_score,stage, nextlimit,laststage,head,tail); // 게임을 초기화  
 }
 
 
-
-void reset(int *dir, int *speed, int *length, int *score, int *x, int *y,int *food_x,int *food_y, int *last_score,int *best_score, int *stage, int *nextlimit) {
+void reset(int *dir, int *speed, int *length, int *score, int *x, int *y,int *food_x,int *food_y, int *last_score,int *best_score, int *stage, int *nextlimit,int laststage,char *head,char *tail) {
 	int i;
 	system("cls"); //화면을 지움 
 	draw_map(); //맵 테두리를 그림 
 	while (_kbhit()) _getch(); //버퍼에 있는 키값을 버림 
 
 	*dir = LEFT; // 방향 초기화  
-	*speed = 100; // 속도 초기화 
-	*length = 5; //뱀 길이 초기화 
+	*speed = 110; // 속도 초기화 
+	*length = 2; //뱀 길이 초기화 
 	*score = 0; //점수 초기화 
 
 	*stage = 1;
@@ -189,18 +257,20 @@ void reset(int *dir, int *speed, int *length, int *score, int *x, int *y,int *fo
 	for (i = 0; i < *length; i++) { //뱀 몸통값 입력 
 		x[i] = MAP_WIDTH / 2 + i;
 		y[i] = MAP_HEIGHT / 2;
-		gotoxy(MAP_X + x[i], MAP_Y + y[i], "ㅇ");
+		gotoxy(MAP_X + x[i], MAP_Y + y[i],tail);
 	}
-	gotoxy(MAP_X + x[0], MAP_Y + y[0], "ㅎ"); //뱀 머리 그림 
-	food(x,y,score,last_score,best_score,food_x,food_y,length,speed, stage,nextlimit); // food 생성  
+	gotoxy(MAP_X + x[0], MAP_Y + y[0], head); //뱀 머리 그림 
+	food(x,y,score,last_score,best_score,food_x,food_y,length,speed, stage,nextlimit,laststage); // food 생성  
 }
 
-void food(int *x, int *y, int *score, int *last_score,int *best_score,int *food_x,int *food_y,int *length,int *speed,int *stage,int *nextlimit) {
+void food(int *x, int *y, int *score, int *last_score,int *best_score,int *food_x,int *food_y,int *length,int *speed,int *stage,int *nextlimit, int  *laststage) {
 	int i;
 	int food_crush_on = 0;//food가 뱀 몸통좌표에 생길 경우 on 
 	int r = 0; //난수 생성에 사동되는 변수 
 	gotoxy(MAP_X, MAP_Y + MAP_HEIGHT, " YOUR SCORE: "); //점수표시 
-	printf("%3d, LAST SCORE: %3d, BEST SCORE: %3d Stage: %3d Remain Score to Next Stage: %3d", *score, *last_score, *best_score, *stage ,*nextlimit - *score);
+	printf("%3d, LASTEST SCORE: %3d, LASTEST STAGE: %3d BEST SCORE: %3d ", *score, *last_score,*laststage,*best_score);
+	gotoxy(MAP_X, MAP_Y + MAP_HEIGHT + 1, " Remain Score to Next Stage: ");
+	printf("%3d Stage: %3d", *nextlimit - *score, *stage);
 
 	while (1) {
 		food_crush_on = 0;
@@ -237,26 +307,26 @@ void draw_map(void) { //맵 테두리 그리는 함수
 	}
 }
 
-void move(int *key, int *dir, int *speed, int *length, int *score, int *x, int *y, int *food_x, int *food_y, int *last_score, int *best_score,int *stage,int *nextlimit) {
+void move(int *key, int *dir, int *speed, int *length, int *score, int *x, int *y, int *food_x, int *food_y, int *last_score, int *best_score,int *stage,int *nextlimit, char *head,char *tail,int *laststage) {
 	int i;
 	if (x[0] == *food_x && y[0] == *food_y) { //food와 충돌했을 경우 
 		*score += 10; //점수 증가 
 		if (*nextlimit == 100) {
 			int a = 0;
 		}
-		food(x, y, score, last_score, best_score, food_x, food_y, length, speed,stage,nextlimit); //새로운 food 추가 
+		food(x, y, score, last_score, best_score, food_x, food_y, length, speed,stage,nextlimit,laststage); //새로운 food 추가 
 		*length+=1; //길이증가 
 		x[*length - 1] = x[*length - 2]; //새로만든 몸통에 값 입력 
 		y[*length - 1] = y[*length - 2];
 	}
 	if (x[0] == 0 || x[0] == MAP_WIDTH - 1 || y[0] == 0 || y[0] == MAP_HEIGHT - 1) { //벽과 충돌했을 경우 
-		game_over(key, dir, speed, length, score, x, y, food_x, food_y, last_score, best_score,stage,nextlimit);
+		game_over(key, dir, speed, length, score, x, y, food_x, food_y, last_score, best_score,stage,nextlimit,head,tail,laststage);
 		return; //game_over에서 게임을 다시 시작하게 되면 여기서부터 반복되므로 
 				//return을 사용하여 move의 나머지 부분이 실행되지 않도록 합니다. 
 	}
 	for (i = 1; i < *length; i++) { //자기몸과 충돌했는지 검사 
 		if (x[0] == x[i] && y[0] == y[i]) {
-			game_over(key, dir, speed, length, score, x, y, food_x, food_y, last_score, best_score,stage,nextlimit);
+			game_over(key, dir, speed, length, score, x, y, food_x, food_y, last_score, best_score,stage,nextlimit,head,tail,laststage);
 			return;
 		}
 	}
@@ -266,12 +336,12 @@ void move(int *key, int *dir, int *speed, int *length, int *score, int *x, int *
 		x[i] = x[i - 1];
 		y[i] = y[i - 1];
 	}
-	gotoxy(MAP_X + x[0], MAP_Y + y[0], "ㅇ"); //머리가 있던곳을 몸통으로 고침 
+	gotoxy(MAP_X + x[0], MAP_Y + y[0], tail); //머리가 있던곳을 몸통으로 고침 
 	if (*dir == LEFT) --x[0]; //방향에 따라 새로운 머리좌표(x[0],y[0])값을 변경 
 	if (*dir == RIGHT) ++x[0];
 	if (*dir == UP) --y[0];
 	if (*dir == DOWN) ++y[0];
-	gotoxy(MAP_X + x[i], MAP_Y + y[i], "ㅎ"); //새로운 머리좌표값에 머리를 그림 
+	gotoxy(MAP_X + x[i], MAP_Y + y[i], head); //새로운 머리좌표값에 머리를 그림 
 }
 
 void pause(int *key) { // p키를 눌렀을 경우 게임을 일시 정지 
@@ -296,14 +366,16 @@ void pause(int *key) { // p키를 눌렀을 경우 게임을 일시 정지
 	}
 }
 
-void game_over(int *key, int *dir, int *speed, int *length, int *score, int *x, int *y, int *food_x, int *food_y, int *last_score, int *best_score,int *stage,int *nextlimit) { //게임종료 함수 
+void game_over(int *key, int *dir, int *speed, int *length, int *score, int *x, int *y, int *food_x, int *food_y, int *last_score, int *best_score,int *stage,int *nextlimit,char *head,char *tail,char *laststage) { //게임종료 함수 
 	gotoxy(MAP_X + (MAP_WIDTH / 2) - 6, MAP_Y + 5, "+----------------------+");
 	gotoxy(MAP_X + (MAP_WIDTH / 2) - 6, MAP_Y + 6, "|      GAME OVER..     |");
 	gotoxy(MAP_X + (MAP_WIDTH / 2) - 6, MAP_Y + 7, "+----------------------+");
 	gotoxy(MAP_X + (MAP_WIDTH / 2) - 6, MAP_Y + 8, " YOUR SCORE : ");
 	*last_score = *score;
+	*laststage = *stage;
 	printf("%d", *last_score);
-
+	gotoxy(MAP_X + (MAP_WIDTH / 2) - 6, MAP_Y + 9, " YOUR MAX STAGE : ");
+	printf("%d", *laststage);
 	gotoxy(MAP_X + (MAP_WIDTH / 2) - 7, MAP_Y + 12, " Press any keys to restart.. ");
 
 	if (*score > *best_score) {
@@ -313,7 +385,7 @@ void game_over(int *key, int *dir, int *speed, int *length, int *score, int *x, 
 	Sleep(500);
 	while (_kbhit()) _getch();
 	*key = _getch();
-	title(key,dir,speed,length,score,x,y,food_x,food_y,last_score,best_score,stage,nextlimit);
+	title(key,dir,speed,length,score,x,y,food_x,food_y,last_score,best_score,stage,nextlimit,head,tail,laststage);
 }
 
 
