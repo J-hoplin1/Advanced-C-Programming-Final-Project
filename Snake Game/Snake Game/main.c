@@ -129,7 +129,6 @@ int main(int args,char **argv) {
 void explainitem(int* key, int* dir, int* speed, int* length, int* score, int* x, int* y, int* food_x, int* food_y, int* last_score, int* best_score, int* stage, int* nextlimit, char* head, char* tail, int* laststage, int* lastitemnumber)
 {
 	int loop = 0;
-	int key = 0;
 	while (_kbhit()) _getch();
 	int i = 0;
 	int j = 0;
