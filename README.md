@@ -32,6 +32,8 @@ Game Software 1st grade major : Advanced C Programming Final Project
 
 - I make a branch divided with functional unit
 
+- VS 2019 Solution link : https://drive.google.com/open?id=15In9wP14ufuAUU6yQcm_j_Ooey1W1wlk
+
 ***
 
 ### 1 . Reference Game's Rule.
