@@ -39,6 +39,15 @@ Game Software 1st grade major : Advanced C Programming Final Project
 
 	- During Customizing I have some issues about choosing characters. To change default character according to user's selection, I need to make a memory that needs to save character's data. In this game, I select all of the example characters as 'Unicode Icon'. In C language, Unicode were recognized as 2bytes. So as includeing 'NULL' I make array that has size of 3, and use strcpy() function in <string.h> to change character's data.
 	```C
+	 // 1 . main.c
+	 
+	 
+	// default head as "ㅎ"
+	// default tail as "ㅇ"
+	char head[3] = "ㅎ";
+	char tail[3] = "ㅇ";
+	
+	// 2 . choosesnake.c
 	gotoxy(MAP_X + (MAP_WIDTH / 2) - 7, MAP_Y + 10, "	   Select Options		");
 	gotoxy(MAP_X + (MAP_WIDTH / 2) - 9, MAP_Y + 13, " Head : 1 . ◇ 2 . ▣ 3. ≪ 4 . ∑");
 
