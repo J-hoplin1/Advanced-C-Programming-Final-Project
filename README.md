@@ -35,6 +35,61 @@ Game Software 1st grade major : Advanced C Programming Final Project
 - VS 2019 Solution link : https://drive.google.com/open?id=15In9wP14ufuAUU6yQcm_j_Ooey1W1wlk
 
 ***
+- Issues during customizing
+
+	1 . During Customizing I have some issues about choosing characters. To change default character according to user's selection, I need to make a memory that needs to save character's data. In this game, I select all of the example characters as 'Unicode Icon'. In C language, Unicode were recognized as 2bytes. So as includeing 'NULL' I make array that has size of 3 to save character's data.
+	```C
+	gotoxy(MAP_X + (MAP_WIDTH / 2) - 7, MAP_Y + 10, "	   Select Options		");
+	gotoxy(MAP_X + (MAP_WIDTH / 2) - 9, MAP_Y + 13, " Head : 1 . ◇ 2 . ▣ 3. ≪ 4 . ∑");
+
+	key = _getch();
+	switch (key)
+	{
+	case 49:
+		strcpy(head, "◇");
+		break;
+	case 50:
+		strcpy(head, "▣");
+		break;
+	case 51:
+		strcpy(head, "≪");
+		break;
+	case 52:
+		strcpy(head, "∑");
+		break;
+	default:
+		break;
+	}
+	gotoxy(MAP_X + (MAP_WIDTH / 2) - 7, MAP_Y + 3, "+--------------------------+");
+	gotoxy(MAP_X + (MAP_WIDTH / 2) - 7, MAP_Y + 4, "|     Select Character     |");
+	gotoxy(MAP_X + (MAP_WIDTH / 2) - 7, MAP_Y + 5, "+--------------------------+");
+	gotoxy(MAP_X + (MAP_WIDTH / 2) - 7, MAP_Y + 7, "Selected Head : ");
+	printf("%s", head);
+	gotoxy(MAP_X + (MAP_WIDTH / 2) - 7, MAP_Y + 8, "Selected Tail : ");
+	printf("%s", tail);
+	gotoxy(MAP_X + (MAP_WIDTH / 2) - 7, MAP_Y + 10, "	   Select Options		");
+	gotoxy(MAP_X + (MAP_WIDTH / 2) - 9, MAP_Y + 13, " Tail : 1 . □ 2 . た 3 . ♧ 4 . ♬");
+	key = _getch();
+	switch (key)
+	{
+	case 49:
+		strcpy(tail, "□");
+		break;
+	case 50:
+		strcpy(tail, "た");
+		break;
+	case 51:
+		strcpy(tail, "♧");
+		break;
+	case 52:
+		strcpy(tail, "♬");
+		break;
+	default:
+		break;
+	}
+	```
+
+***
 
 ### 1 . Reference Game's Rule.
 
