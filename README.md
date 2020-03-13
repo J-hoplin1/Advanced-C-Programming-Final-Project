@@ -137,7 +137,7 @@ Game Software 1st grade major : Advanced C Programming Final Project
 
         ![img](IMG/2.PNG)
 
-    - So first I make all global variables into global variable, without damaging algorithm reference
+    - So first I make all global variables into local variable, without damaging referenced algorithm
 
         ![img](IMG/3.PNG)
 
